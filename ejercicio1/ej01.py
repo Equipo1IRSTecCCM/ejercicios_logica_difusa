@@ -16,6 +16,88 @@ def evaluar(fx,x,v):
 def intersectar(a,ax,va,b,bx,vb):
     d = [evaluar(a,ax,va),evaluar(b,bx,vb)]
     return min(d)
+def calcular(inputs,possible_values,entrada,vp_qual_ra):
+    minimos = []
+    #Para cada parametros
+    for param_idx in range(len(inputs)-1):
+        param = inputs[param_idx]
+        my_x = possible_values[param_idx]
+        #Para cada rango posible
+        for ran_idx in range(len(param)):
+            t = []
+            ran = param[ran_idx]
+            #Para cada otro parámetro no evaluado
+            for other_idx in range(param_idx+1,len(inputs)):
+                other_x = possible_values[other_idx]
+                #Para cada rango del otro parámetro
+                for other_ran in inputs[other_idx]:
+                    t.append(intersectar(ran,my_x,entrada[param_idx],other_ran,other_x,entrada[other_idx]))
+            minimos.append(t)
+
+    '''
+            dc  dm  dl
+            ----------
+    vb  |   psa psb pb
+    vm  |   pa  pm  pb
+    va  |   pa  psa pm
+    '''
+    output_case = [[3,1,0],[4,2,0],[4,3,2]]
+    outputs = np.zeros((1,len(vp_qual_ra)))
+    for i in range(len(output_case)):
+        for j in range(len(output_case[i])):
+            if minimos[i][j] > outputs[0][output_case[i][j]]:
+                outputs[0][output_case[i][j]] = minimos[i][j]
+
+
+    salidas = []
+    idx = 0
+    for ran in vp_qual_ra:
+        t = []
+        for v in ran:
+            if v > outputs[0][idx]:
+                t.append(outputs[0][idx])
+            else:
+                t.append(v)
+        salidas.append(t)
+        idx+=1
+        
+    
+
+    resultado = []
+    #Para cada x
+    for i in range(len(vp_qual)):
+        maxi = 0
+        #Evaluar el valor de cada salida en esa x
+        for j in range(len(salidas)):
+            if maxi < salidas[j][i]:
+                maxi = salidas[j][i]
+        resultado.append(maxi)
+    #Calcular el z*
+    num = 0
+    idx = 0
+    for i in resultado:
+        num += i * vp_qual[idx]
+        idx +=1
+    z_estrella = num/np.sum(resultado)
+    return resultado,z_estrella
+def superficie(inputs,possible_values,vp_qual_ra):
+    Z = []
+    for i in possible_values[1]:
+        t = []
+        for j in possible_values[0]:
+            _,z_estrella = calcular(inputs,possible_values,[j,i],vp_qual_ra)
+            t.append(z_estrella)
+        Z.append(t)
+        print(i)
+    X,Y = np.meshgrid(possible_values[0],possible_values[1])
+    Z = np.array(Z)
+    fig = plt.figure()
+    ax = plt.axes(projection='3d')
+    #ax.contour3D(X, Y, Z, 50, cmap='binary')
+    ax.plot_surface(X, Y, Z, rstride=1, cstride=1, cmap='inferno', edgecolor='none')
+    ax.set_xlabel('x')
+    ax.set_ylabel('y')
+    ax.set_zlabel('z')
 #Caso 1 8.6 130.55
 #Caso 2 95.6 2.5
 #Caso 3 49.3 49.5
@@ -27,8 +109,8 @@ for i in nombre_variables:
     s = "Escribe el valor de "+i+": "
     n = input(s)
     entrada.append(float(n))
-va_qual = np.arange(5.1, 97.6,0.1)#velocidades del auto
-da_qual = np.arange(1.1, 150.1,0.1)#distancias del auto
+va_qual = np.arange(5.1, 97.6,1)#velocidades del auto
+da_qual = np.arange(1.1, 150.1,1)#distancias del auto
 vp_qual = np.arange(0.1, 18.6,0.1)#velocidades de Usain Bolt
 
 #Velocidades del auto
@@ -89,79 +171,15 @@ plt.ylabel("μ")
 plt.ylim([0,1.1])
 plt.legend()
 
-'''
-        dc  dm  dl
-        ----------
-vb  |   psa psb pb
-vm  |   pa  pm  pb
-va  |   pa  psa pm
-'''
-
-minimos = []
-#Para cada parametros
-for param_idx in range(len(inputs)-1):
-    param = inputs[param_idx]
-    my_x = possible_values[param_idx]
-    #Para cada rango posible
-    for ran_idx in range(len(param)):
-        t = []
-        ran = param[ran_idx]
-        #Para cada otro parámetro no evaluado
-        for other_idx in range(param_idx+1,len(inputs)):
-            other_x = possible_values[other_idx]
-            #Para cada rango del otro parámetro
-            for other_ran in inputs[other_idx]:
-                t.append(intersectar(ran,my_x,entrada[param_idx],other_ran,other_x,entrada[other_idx]))
-        minimos.append(t)
-
-
-output_case = [[3,1,0],[4,2,0],[4,3,2]]
-outputs = np.zeros((1,len(vp_qual_ra)))
-for i in range(len(output_case)):
-    for j in range(len(output_case[i])):
-        if minimos[i][j] > outputs[0][output_case[i][j]]:
-            outputs[0][output_case[i][j]] = minimos[i][j]
-
-
-salidas = []
-idx = 0
-for ran in vp_qual_ra:
-    t = []
-    for v in ran:
-        if v > outputs[0][idx]:
-            t.append(outputs[0][idx])
-        else:
-            t.append(v)
-    salidas.append(t)
-    idx+=1
-    
+resultado,z_estrella = calcular(inputs,possible_values,entrada,vp_qual_ra)
 plt.subplot(144)
-
-resultado = []
-#Para cada x
-for i in range(len(vp_qual)):
-    maxi = 0
-    #Evaluar el valor de cada salida en esa x
-    for j in range(len(salidas)):
-        if maxi < salidas[j][i]:
-            maxi = salidas[j][i]
-    resultado.append(maxi)
-
 plt.plot(vp_qual,resultado, label = 'salida')
 plt.title("Velocidad del peatón truncada")
 plt.xlabel("km/h")
 plt.ylabel("μ")
 plt.ylim([0,1.1])
 plt.legend()
-
-
-#Calcular el z*
-num = 0
-idx = 0
-for i in resultado:
-    num += i * vp_qual[idx]
-    idx +=1
-z_estrella = num/np.sum(resultado)
 s = "La " + nombre_salida + "debe ser de " + str(round(z_estrella,1)) + " km/h"
 print(s)
+superficie(inputs,possible_values,vp_qual_ra)
 plt.show()
