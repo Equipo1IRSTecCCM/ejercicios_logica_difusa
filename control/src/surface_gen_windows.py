@@ -265,7 +265,7 @@ if __name__ == "__main__":
         s = "Escribe el valor de "+i+": "
         n = input(s)
         entrada.append(float(n))
-    names_variables = ["Distancia lineal","Distancia angular","l"]
+    
     output_case = [[0,0,0,0,0],[0,1,1,1,0],[1,2,2,2,1],[2,3,3,3,2],[2,3,4,3,2]]
     resultado,z_estrella = calcular(inputs,possible_values,entrada,ls_qual_ra,ls_qual,output_case)
     s = "La " + nombre_variables[0] + " debe ser de " + str(round(z_estrella,1))
@@ -276,7 +276,7 @@ if __name__ == "__main__":
     plt.xlabel("~")
     plt.ylabel("μ")
     plt.ylim([0,1.1])
-    names_variables = ["Distancia lineal","Distancia angular","a"]
+    #Get the discrete output for the input scenario
     output_case = [[0,1,2,3,4],[0,1,2,3,4],[1,1,2,3,3],[1,1,2,3,3],[1,1,2,3,3]]
     resultado,z_estrella = calcular(inputs,possible_values,entrada,as_qual_ra,as_qual,output_case)
     s = "La " + nombre_variables[1] + " debe ser de " + str(round(z_estrella,1))
@@ -287,10 +287,11 @@ if __name__ == "__main__":
     plt.xlabel("grad/s")
     plt.ylabel("μ")
     plt.ylim([0,1.1])
-    names_variables = ["Distancia lineal","Distancia angular","l"]
+    #Plot the control surface
+    names_variables = ["Distancia lineal","Distancia angular","Velocidad lineal"]
     output_case = [[0,0,0,0,0],[0,1,1,1,0],[1,2,2,2,1],[2,3,3,3,2],[2,3,4,3,2]]
     superficie(inputs,possible_values,ls_qual_ra,ls_qual,output_case,names_variables)
-    names_variables = ["Distancia lineal","Distancia angular","a"]
+    names_variables = ["Distancia lineal","Distancia angular","Velocidad angular"]
     output_case = [[0,1,2,3,4],[0,1,2,3,4],[1,1,2,3,3],[1,1,2,3,3],[1,1,2,3,3]]
     superficie(inputs,possible_values,as_qual_ra,as_qual,output_case,names_variables)
     plt.show()
