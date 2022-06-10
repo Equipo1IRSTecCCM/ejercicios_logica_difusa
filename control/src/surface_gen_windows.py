@@ -12,6 +12,7 @@ import skfuzzy as sk
 import csv
 from matplotlib import pyplot as plt
 
+
 def evaluar(fx,x,v):
     """
     Evaluate the function fx for a value v
