@@ -4,7 +4,7 @@ Equipo 1
     Diego Reyna Reyes A01657387
     Samantha Barron Martinez A01652135
     Jorge Antonio Hoyo Garcia A01658142
-Reporte Ejercicio FIS
+Controlador Difuso
 Ciudad de Mexico, 10/06/2022
 """
 import numpy as np
@@ -172,18 +172,6 @@ def superficie(inputs,possible_values,ls_qual_ra,ls_qual,output_case,names_varia
     ax.set_ylabel(names_variables[1])
     ax.set_zlabel(names_variables[2])
 
-    file_name = names_variables[2] + "z.csv"
-    with open(file_name, "w") as f:
-        wr = csv.writer(f)
-        wr.writerows(Z)
-    file_name = "x.csv"
-    with open(file_name, "w") as f:
-        wr = csv.writer(f)
-        wr.writerows(X)
-    file_name = "y.csv"
-    with open(file_name, "w") as f:
-        wr = csv.writer(f)
-        wr.writerows(Y)
 if __name__ == "__main__":
     #Create every single membership
     ld_qual = np.arange(0, 16.1,0.5)#velocidades del auto
@@ -207,7 +195,7 @@ if __name__ == "__main__":
     ad_qual_ra = []
     ad_qual_ra.append(sk.gaussmf(ad_qual, -180, 25))
     ad_qual_ra.append(sk.gaussmf(ad_qual, -90, 25))
-    ad_qual_ra.append(sk.gaussmf(ad_qual, 0, 25))
+    ad_qual_ra.append(sk.trimf(ad_qual, [-10,0,10]))
     ad_qual_ra.append(sk.gaussmf(ad_qual, 90, 25))
     ad_qual_ra.append(sk.gaussmf(ad_qual, 180, 25))
 
@@ -288,7 +276,7 @@ if __name__ == "__main__":
     plt.ylabel("μ")
     plt.ylim([0,1.1])
     names_variables = ["Distancia lineal","Distancia angular","a"]
-    output_case = [[4,3,2,1,0],[4,3,2,1,0],[3,3,2,1,1],[3,3,2,1,1],[3,3,2,1,1]]
+    output_case = [[0,1,2,3,4],[0,1,2,3,4],[1,1,2,3,3],[1,1,2,3,3],[1,1,2,3,3]]
     resultado,z_estrella = calcular(inputs,possible_values,entrada,as_qual_ra,as_qual,output_case)
     s = "La " + nombre_variables[1] + " debe ser de " + str(round(z_estrella,1))
     print(s)
@@ -302,6 +290,6 @@ if __name__ == "__main__":
     output_case = [[0,0,0,0,0],[0,1,1,1,0],[1,2,2,2,1],[2,3,3,3,2],[2,3,4,3,2]]
     superficie(inputs,possible_values,ls_qual_ra,ls_qual,output_case,names_variables)
     names_variables = ["Distancia lineal","Distancia angular","a"]
-    output_case = [[4,3,2,1,0],[4,3,2,1,0],[3,3,2,1,1],[3,3,2,1,1],[3,3,2,1,1]]
+    output_case = [[0,1,2,3,4],[0,1,2,3,4],[1,1,2,3,3],[1,1,2,3,3],[1,1,2,3,3]]
     superficie(inputs,possible_values,as_qual_ra,as_qual,output_case,names_variables)
     plt.show()
