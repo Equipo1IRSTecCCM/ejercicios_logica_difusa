@@ -97,7 +97,7 @@ def go_to_goal (xgoal, ygoal):
         dlineal = abs(np.sqrt((x-x2)**2+(y-y2)**2))
         w,v = getValues(dtheta,dlineal)
         print(dtheta,dlineal,w,v)
-        msg.angular.z = -w
+        msg.angular.z = w
         msg.linear.x = v
         velocity_publisher.publish(msg)
         if dlineal < 0.01:
@@ -119,26 +119,26 @@ if __name__ == '__main__':
         pose_subscriber2 = rospy.Subscriber(position_topic2, Pose, poseCallback2)
 
         #Entrada
-        with open('/home/zuramaru/Documents/catkin_ws/src/fusible/ejercicios_logica_difusa/src/az.csv', 'r') as read_obj:
+        with open('/home/zuramaru/Documents/catkin_ws/src/fusible/ejercicios_logica_difusa/control/src/az.csv', 'r') as read_obj:
             csv_reader = reader(read_obj)
             list_z = list(csv_reader)
             
         Za = np.array([list(map(float, sublist)) for sublist in list_z])
 
-        with open('/home/zuramaru/Documents/catkin_ws/src/fusible/ejercicios_logica_difusa/src/lz.csv', 'r') as read_obj:
+        with open('/home/zuramaru/Documents/catkin_ws/src/fusible/ejercicios_logica_difusa/control/src/lz.csv', 'r') as read_obj:
             csv_reader = reader(read_obj)
             list_z = list(csv_reader)
             
         Zl = np.array([list(map(float, sublist)) for sublist in list_z])
         
-        with open('/home/zuramaru/Documents/catkin_ws/src/fusible/ejercicios_logica_difusa/src/x.csv', 'r') as read_obj:
+        with open('/home/zuramaru/Documents/catkin_ws/src/fusible/ejercicios_logica_difusa/control/src/x.csv', 'r') as read_obj:
             csv_reader = reader(read_obj)
             list_z = list(csv_reader)
             
         x_temp = [list(map(float, sublist)) for sublist in list_z]
         X = np.array(x_temp[0])
 
-        with open('/home/zuramaru/Documents/catkin_ws/src/fusible/ejercicios_logica_difusa/src/y.csv', 'r') as read_obj:
+        with open('/home/zuramaru/Documents/catkin_ws/src/fusible/ejercicios_logica_difusa/control/src/y.csv', 'r') as read_obj:
             csv_reader = reader(read_obj)
             list_z = list(csv_reader)
             

@@ -4,13 +4,12 @@ Equipo 1
     Diego Reyna Reyes A01657387
     Samantha Barron Martinez A01652135
     Jorge Antonio Hoyo Garcia A01658142
-Reporte Ejercicio FIS
+Control Difuso
 Ciudad de Mexico, 10/06/2022
 """
 import numpy as np
 import skfuzzy as sk
 import csv
-from matplotlib import pyplot as plt
 
 def evaluar(fx,x,v):
     """
@@ -165,13 +164,8 @@ def superficie(inputs,possible_values,ls_qual_ra,ls_qual,output_case,names_varia
     #Create the 3D graph
     X,Y = np.meshgrid(possible_values[0],possible_values[1])
     Z = np.array(Z)
-    fig = plt.figure()
-    ax = plt.axes(projection='3d')
-    ax.plot_surface(X, Y, Z, rstride=1, cstride=1, cmap='inferno', edgecolor='none')
-    ax.set_xlabel(names_variables[0])
-    ax.set_ylabel(names_variables[1])
-    ax.set_zlabel(names_variables[2])
-
+    
+    #Save the files
     file_name = names_variables[2] + "z.csv"
     with open(file_name, "w") as f:
         wr = csv.writer(f)
@@ -207,7 +201,7 @@ if __name__ == "__main__":
     ad_qual_ra = []
     ad_qual_ra.append(sk.gaussmf(ad_qual, -180, 25))
     ad_qual_ra.append(sk.gaussmf(ad_qual, -90, 25))
-    ad_qual_ra.append(sk.gaussmf(ad_qual, 0, 25))
+    ad_qual_ra.append(sk.trimf(ad_qual, [-10,0,10]))
     ad_qual_ra.append(sk.gaussmf(ad_qual, 90, 25))
     ad_qual_ra.append(sk.gaussmf(ad_qual, 180, 25))
 
@@ -230,78 +224,12 @@ if __name__ == "__main__":
     as_qual_ra.append(sk.trimf(as_qual, [-1,0,1]))
     as_qual_ra.append(sk.trimf(as_qual, [0,1,2]))
     as_qual_ra.append(sk.trimf(as_qual, [1,2,2]))
-    #Create our plot
-    plt.figure(1)
-    plt.subplot(231)
-    for idx in range(len(ld_qual_ra)):
-        plt.plot(ld_qual,ld_qual_ra[idx], label = ld_names[idx])
-
-    plt.title("Distancia lineal")
-    plt.xlabel("~")
-    plt.ylabel("μ")
-    plt.ylim([0,1.1])
-    plt.legend()
-
-    plt.subplot(234)
-    for idx in range(len(ad_qual_ra)):
-        plt.plot(ad_qual,ad_qual_ra[idx], label = ad_names[idx])
-    plt.title("Distancia angular")
-    plt.xlabel("Grados")
-    plt.ylabel("μ")
-    plt.ylim([0,1.1])
-    plt.legend()
-
-    plt.subplot(232)
-    for idx in range(len(ls_qual_ra)):
-        plt.plot(ls_qual,ls_qual_ra[idx], label = ls_names[idx])
-    plt.title("Velocidad lineal")
-    plt.xlabel("~")
-    plt.ylabel("μ")
-    plt.ylim([0,1.1])
-    plt.legend()
-
-    plt.subplot(235)
-    for idx in range(len(as_qual_ra)):
-        plt.plot(as_qual,as_qual_ra[idx], label = as_names[idx])
-    plt.title("Velocidad angular")
-    plt.xlabel("grados/s")
-    plt.ylabel("μ")
-    plt.ylim([0,1.1])
-    plt.legend()
-    #Velocidad lineal
-    entrada = []
-    nombre_variables = ["distancia lineal","distancia angular"]
-    nombre_salida = "velocidad del peaton"
-    for i in nombre_variables:
-        s = "Escribe el valor de "+i+": "
-        n = input(s)
-        entrada.append(float(n))
-    names_variables = ["Distancia lineal","Distancia angular","l"]
-    output_case = [[0,0,0,0,0],[0,1,1,1,0],[1,2,2,2,1],[2,3,3,3,2],[2,3,4,3,2]]
-    resultado,z_estrella = calcular(inputs,possible_values,entrada,ls_qual_ra,ls_qual,output_case)
-    s = "La " + nombre_variables[0] + " debe ser de " + str(round(z_estrella,1))
-    print(s)
-    plt.subplot(233)
-    plt.plot(ls_qual,resultado, label = 'salida')
-    plt.title("Vel lineal")
-    plt.xlabel("~")
-    plt.ylabel("μ")
-    plt.ylim([0,1.1])
-    names_variables = ["Distancia lineal","Distancia angular","a"]
-    output_case = [[4,3,2,1,0],[4,3,2,1,0],[3,3,2,1,1],[3,3,2,1,1],[3,3,2,1,1]]
-    resultado,z_estrella = calcular(inputs,possible_values,entrada,as_qual_ra,as_qual,output_case)
-    s = "La " + nombre_variables[1] + " debe ser de " + str(round(z_estrella,1))
-    print(s)
-    plt.subplot(236)
-    plt.plot(as_qual,resultado, label = 'salida')
-    plt.title("Velocidad angular")
-    plt.xlabel("grad/s")
-    plt.ylabel("μ")
-    plt.ylim([0,1.1])
+    
+    
     names_variables = ["Distancia lineal","Distancia angular","l"]
     output_case = [[0,0,0,0,0],[0,1,1,1,0],[1,2,2,2,1],[2,3,3,3,2],[2,3,4,3,2]]
     superficie(inputs,possible_values,ls_qual_ra,ls_qual,output_case,names_variables)
     names_variables = ["Distancia lineal","Distancia angular","a"]
-    output_case = [[4,3,2,1,0],[4,3,2,1,0],[3,3,2,1,1],[3,3,2,1,1],[3,3,2,1,1]]
+    output_case = [[0,1,2,3,4],[0,1,2,3,4],[1,1,2,3,3],[1,1,2,3,3],[1,1,2,3,3]]
     superficie(inputs,possible_values,as_qual_ra,as_qual,output_case,names_variables)
-    plt.show()
+    
